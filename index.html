@@ -1,41 +1,170 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crispies.io</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f4f4f4;
-            text-align: center;
-        }
-        .container {
-            max-width: 600px;
-            padding: 2rem;
-            border-radius: 10px;
-            background-color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            font-size: 2.5rem;
-            color: #333;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #666;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crispies — скоро открытие</title>
+  <meta name="description" content="Crispies — аккуратные цифровые инструменты. Мы готовим запуск." />
+  <meta name="theme-color" content="#0B0F19" />
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg:#0B0F19;
+      --card:#0F1524;
+      --muted:#A3AED0;
+      --text:#E6E8F0;
+      --primary:#6C5CE7;   /* фирменный */
+      --accent:#10B981;    /* успех */
+      --border:#202B44;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+    }
+
+    *{ box-sizing:border-box }
+    html,body{ height:100% }
+    body{
+      margin:0;
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 80% -20%, rgba(108,92,231,.20), transparent 60%),
+        radial-gradient(1000px 700px at -10% 120%, rgba(16,185,129,.18), transparent 55%),
+        linear-gradient(180deg, #0B0F19 0%, #0A0E18 100%);
+      display:grid;
+      place-items:center;
+      padding:24px;
+      overflow:hidden;
+    }
+
+    /* subtle animated glow blob */
+    .glow{
+      position:fixed; inset:-20% -20% auto auto; width:45vmax; height:45vmax;
+      background:radial-gradient(closest-side, rgba(108,92,231,.22), transparent 70%);
+      filter:blur(60px); opacity:.7; pointer-events:none; border-radius:50%;
+      animation:float 14s ease-in-out infinite;
+      transform:translateZ(0);
+    }
+    @keyframes float{
+      0%{ transform:translate3d(0,0,0) }
+      50%{ transform:translate3d(-3%, 2%, 0) }
+      100%{ transform:translate3d(0,0,0) }
+    }
+
+    .container{
+      width:min(720px, 100%);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      padding: clamp(20px, 5vw, 40px);
+      backdrop-filter: blur(12px);
+      position:relative;
+      z-index:1;
+    }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:6px 10px; border:1px solid var(--border);
+      background:rgba(255,255,255,.03);
+      border-radius:999px; font-size:12px; color:var(--muted);
+      letter-spacing:.02em;
+    }
+    .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent) }
+
+    h1{
+      margin:14px 0 8px;
+      font-size: clamp(28px, 5vw, 44px);
+      line-height:1.1;
+      font-weight:700;
+      letter-spacing:-.02em;
+    }
+    .brand{
+      background:linear-gradient(90deg, var(--primary), #8A7BFF);
+      -webkit-background-clip:text; background-clip:text; color:transparent;
+    }
+    p.lead{
+      margin: 10px 0 22px;
+      color: var(--muted);
+      font-size: clamp(16px, 2.2vw, 18px);
+      line-height:1.6;
+    }
+
+    .cta{
+      display:flex; gap:10px; flex-wrap:wrap;
+    }
+    .btn{
+      appearance:none; border:1px solid transparent;
+      background:linear-gradient(90deg, var(--primary), #8A7BFF);
+      color:#fff; font-weight:600; font-size:15px;
+      padding:12px 16px; border-radius:12px;
+      cursor:pointer; transition:transform .06s ease, filter .2s ease, box-shadow .2s ease;
+      box-shadow:0 8px 24px rgba(108,92,231,.35);
+      text-decoration:none; display:inline-flex; align-items:center; gap:10px;
+    }
+    .btn:active{ transform:translateY(1px) }
+    .btn.secondary{
+      background:transparent;
+      border-color:var(--border);
+      color:var(--text);
+      box-shadow:none;
+    }
+    .btn.secondary:hover{ border-color:#2f3a58 }
+
+    .meta{
+      margin-top:22px; font-size:13px; color:#8B95B2;
+    }
+    .meta a{ color:#C4CBF5; text-decoration:none }
+    .meta a:hover{ text-decoration:underline }
+
+    footer{
+      position:fixed; inset:auto 16px 16px 16px; display:flex; justify-content:center; z-index:1;
+      color:#7E89A8; font-size:12px;
+    }
+
+    /* accommodate very small screens */
+    @media (max-width:420px){
+      .cta{ flex-direction:column }
+      .btn{ width:100%; justify-content:center }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>crispies.io</h1>
-        <p>Скоро здесь появится нечто удивительное. Мы усердно работаем над нашим проектом!</p>
+  <div class="glow" aria-hidden="true"></div>
+
+  <main class="container" role="main" aria-labelledby="title">
+    <span class="badge" aria-label="Статус">
+      <span class="dot" aria-hidden="true"></span>
+      скоро запуск
+    </span>
+
+    <h1 id="title">
+      <span class="brand">Crispies</span> — скоро здесь
+    </h1>
+    <p class="lead">
+      Мы готовим аккуратные цифровые инструменты. Немного терпения — и вы увидите, над чем мы работали.
+    </p>
+
+    <div class="cta" role="group" aria-label="Действия">
+      <a class="btn" href="/auth">Войти / Зарегистрироваться</a>
+      <a class="btn secondary" href="mailto:support@crispies.io">Связаться с поддержкой</a>
     </div>
+
+    <p class="meta">
+      Нужен ранний доступ? Напишите на <a href="mailto:support@crispies.io">support@crispies.io</a>
+    </p>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Crispies
+  </footer>
+
+  <script>
+    // Текущий год в футере
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
 </body>
 </html>
