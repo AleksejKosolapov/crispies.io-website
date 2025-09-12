@@ -1,159 +1,813 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Crispies — скоро открытие</title>
-  <meta name="description" content="Crispies — аккуратные цифровые инструменты. Мы готовим запуск." />
-  <meta name="theme-color" content="#0B0F19" />
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <style>
-    :root{
-      --bg:#0B0F19;
-      --card:#0F1524;
-      --muted:#A3AED0;
-      --text:#E6E8F0;
-      --primary:#6C5CE7;   /* фирменный */
-      --accent:#10B981;    /* успех */
-      --border:#202B44;
-      --shadow:0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
-    }
+    <title>
+      Crispies — аккуратные цифровые инструменты для фаундеров и инвесторов
+    </title>
+    <meta
+      name="description"
+      content="Crispies — платформа, где фаундеры создают карточки стартапов, а инвесторы легко находят и фильтруют проекты по метрикам."
+    />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#0B0F19" />
+    <link rel="canonical" href="https://crispies.io/" />
+    <!-- Жёстко апгрейдим любые случайные http→https и блокируем смешанный контент -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="upgrade-insecure-requests; block-all-mixed-content"
+    />
 
-    *{ box-sizing:border-box }
-    html,body{ height:100% }
-    body{
-      margin:0;
-      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
-      color:var(--text);
-      background:
-        radial-gradient(1200px 800px at 80% -20%, rgba(108,92,231,.20), transparent 60%),
-        radial-gradient(1000px 700px at -10% 120%, rgba(16,185,129,.18), transparent 55%),
-        linear-gradient(180deg, #0B0F19 0%, #0A0E18 100%);
-      display:grid;
-      place-items:center;
-      padding:24px;
-      overflow:hidden;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
+    <!-- Open Graph / Twitter -->
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:title"
+      content="Crispies — аккуратные цифровые инструменты"
+    />
+    <meta
+      property="og:description"
+      content="Карточки стартапов, метрики и умный поиск для инвесторов."
+    />
+    <meta property="og:url" content="https://crispies.io/" />
+    <!-- Добавь /og-image.png в корень при желании -->
+    <meta property="og:image" content="/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
 
-    .glow{
-      position:fixed; inset:-20% -20% auto auto; width:45vmax; height:45vmax;
-      background:radial-gradient(closest-side, rgba(108,92,231,.22), transparent 70%);
-      filter:blur(60px); opacity:.7; pointer-events:none; border-radius:50%;
-      animation:float 14s ease-in-out infinite;
-      transform:translateZ(0);
-    }
-    @keyframes float{
-      0%{ transform:translate3d(0,0,0) }
-      50%{ transform:translate3d(-3%, 2%, 0) }
-      100%{ transform:translate3d(0,0,0) }
-    }
+    <!-- Icons -->
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
-    .container{
-      width:min(720px, 100%);
-      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      border:1px solid var(--border);
-      border-radius:var(--radius);
-      box-shadow:var(--shadow);
-      padding: clamp(20px, 5vw, 40px);
-      backdrop-filter: blur(12px);
-      position:relative;
-      z-index:1;
-      text-align: center;
-    }
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
 
-    .badge{
-      display:inline-flex; align-items:center; gap:8px;
-      padding:6px 10px; border:1px solid var(--border);
-      background:rgba(255,255,255,.03);
-      border-radius:999px; font-size:12px; color:var(--muted);
-      letter-spacing:.02em;
-    }
-    .dot{ width:8px; height:8px; border-radius:50%; background:var(--accent); box-shadow:0 0 8px var(--accent) }
+    <style>
+      :root {
+        --bg: #0b0f19;
+        --bg-2: #0a0e18;
+        --card: #0f1524;
+        --muted: #a3aed0;
+        --text: #e6e8f0;
+        --primary: #6c5ce7; /* фирменный фиолетовый */
+        --accent: #10b981; /* успех/подсветки */
+        --border: #202b44;
+        --radius: 18px;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
 
-    h1{
-      margin:14px 0 8px;
-      font-size: clamp(28px, 5vw, 44px);
-      line-height:1.1;
-      font-weight:700;
-      letter-spacing:-.02em;
-    }
-    .brand{
-      background:linear-gradient(90deg, var(--primary), #8A7BFF);
-      -webkit-background-clip:text; background-clip:text; color:transparent;
-    }
-    p.lead{
-      margin: 10px 0 26px;
-      color: var(--muted);
-      font-size: clamp(16px, 2.2vw, 18px);
-      line-height:1.6;
-    }
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        margin: 0;
+        font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto,
+          Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(
+            1200px 800px at 80% -20%,
+            rgba(108, 92, 231, 0.2),
+            transparent 60%
+          ),
+          radial-gradient(
+            1000px 700px at -10% 120%,
+            rgba(16, 185, 129, 0.18),
+            transparent 55%
+          ),
+          linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
 
-    .cta{ display:flex; justify-content:center; }
-    .btn{
-      appearance:none; border:1px solid transparent;
-      background:linear-gradient(90deg, var(--primary), #8A7BFF);
-      color:#fff; font-weight:600; font-size:15px;
-      padding:12px 16px; border-radius:12px;
-      cursor:pointer; transition:transform .06s ease, filter .2s ease, box-shadow .2s ease;
-      box-shadow:0 8px 24px rgba(108,92,231,.35);
-      text-decoration:none; display:inline-flex; align-items:center; gap:10px;
-    }
-    .btn:active{ transform:translateY(1px) }
+      /* Едва заметная «чертёжная» сетка поверх фона */
+      .grid-overlay::before {
+        content: "";
+        position: fixed;
+        inset: 0;
+        background-image: linear-gradient(
+            to right,
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 1px
+          ),
+          linear-gradient(
+            to bottom,
+            rgba(255, 255, 255, 0.04) 1px,
+            transparent 1px
+          );
+        background-size: 32px 32px, 32px 32px;
+        mask-image: radial-gradient(
+          70% 70% at 50% 30%,
+          rgba(0, 0, 0, 0.5),
+          transparent 80%
+        );
+        pointer-events: none;
+        z-index: 0;
+      }
 
-    .meta{
-      margin-top:22px; font-size:13px; color:#8B95B2;
-    }
-    .meta a{ color:#C4CBF5; text-decoration:none }
-    .meta a:hover{ text-decoration:underline }
+      .glow {
+        position: fixed;
+        inset: -20% -20% auto auto;
+        width: 45vmax;
+        height: 45vmax;
+        background: radial-gradient(
+          closest-side,
+          rgba(108, 92, 231, 0.22),
+          transparent 70%
+        );
+        filter: blur(60px);
+        opacity: 0.7;
+        pointer-events: none;
+        border-radius: 50%;
+        animation: float 14s ease-in-out infinite;
+        transform: translateZ(0);
+        z-index: 0;
+      }
+      @keyframes float {
+        0% {
+          transform: translate3d(0, 0, 0);
+        }
+        50% {
+          transform: translate3d(-3%, 2%, 0);
+        }
+        100% {
+          transform: translate3d(0, 0, 0);
+        }
+      }
 
-    footer{
-      position:fixed; inset:auto 16px 16px 16px; display:flex; justify-content:center; z-index:1;
-      color:#7E89A8; font-size:12px;
-    }
+      .container {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: clamp(20px, 3vw, 40px) 20px;
+      }
+      .card {
+        background: linear-gradient(
+          180deg,
+          rgba(255, 255, 255, 0.04),
+          rgba(255, 255, 255, 0.02)
+        );
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(12px);
+      }
 
-    @media (max-width:420px){
-      .btn{ width:100%; justify-content:center }
-    }
-  </style>
-</head>
-<body>
-  <div class="glow" aria-hidden="true"></div>
+      /* Header */
+      .header {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        background: linear-gradient(
+          180deg,
+          rgba(11, 15, 25, 0.75),
+          rgba(11, 15, 25, 0)
+        );
+        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        backdrop-filter: blur(10px);
+      }
+      .nav {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 14px 0;
+      }
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        text-decoration: none;
+        color: var(--text);
+      }
+      .logo-mark {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary), #8a7bff);
+        box-shadow: 0 8px 24px rgba(108, 92, 231, 0.45);
+      }
+      .nav a {
+        color: #c4cbf5;
+        text-decoration: none;
+        font-weight: 500;
+        font-size: 14px;
+        opacity: 0.9;
+      }
+      .nav a:hover {
+        opacity: 1;
+        text-decoration: underline;
+      }
 
-  <main class="container" role="main" aria-labelledby="title">
-    <span class="badge" aria-label="Статус">
-      <span class="dot" aria-hidden="true"></span>
-      скоро запуск
-    </span>
+      .btn {
+        appearance: none;
+        border: 1px solid transparent;
+        background: linear-gradient(90deg, var(--primary), #8a7bff);
+        color: #fff;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 12px 16px;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: transform 0.06s ease, filter 0.2s ease, box-shadow 0.2s ease;
+        box-shadow: 0 8px 24px rgba(108, 92, 231, 0.35);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .btn:active {
+        transform: translateY(1px);
+      }
+      .btn.secondary {
+        background: transparent;
+        border-color: #2a3555;
+        color: #c4cbf5;
+        box-shadow: none;
+      }
+      .btn.secondary:hover {
+        border-color: #3a4670;
+      }
 
-    <h1 id="title">
-      <span class="brand">Crispies</span> — скоро здесь
-    </h1>
+      /* Hero */
+      .hero {
+        position: relative;
+        padding: min(12vh, 120px) 0 72px;
+        text-align: center;
+      }
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 10px;
+        border: 1px solid var(--border);
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 999px;
+        font-size: 12px;
+        color: var(--muted);
+        letter-spacing: 0.02em;
+      }
+      .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+      .brand {
+        background: linear-gradient(90deg, var(--primary), #8a7bff);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      h1 {
+        margin: 14px 0 12px;
+        font-size: clamp(32px, 6vw, 56px);
+        line-height: 1.06;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      .lead {
+        margin: 10px auto 28px;
+        color: var(--muted);
+        font-size: clamp(16px, 2.2vw, 18px);
+        line-height: 1.65;
+        max-width: 760px;
+      }
+      .cta {
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
 
-    <p class="lead">
-      Мы готовим аккуратные цифровые инструменты. Немного терпения — и вы увидите, над чем мы работали.
-    </p>
+      /* Features */
+      .section {
+        padding: 72px 0;
+      }
+      .section h2 {
+        font-size: clamp(22px, 4.2vw, 32px);
+        margin: 0 0 14px;
+        letter-spacing: -0.01em;
+      }
+      .section p.sub {
+        color: var(--muted);
+        margin: 0 0 28px;
+      }
+      .grid {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: repeat(12, 1fr);
+      }
+      .col-4 {
+        grid-column: span 4;
+      }
+      .col-6 {
+        grid-column: span 6;
+      }
+      .col-12 {
+        grid-column: span 12;
+      }
 
+      @media (max-width: 900px) {
+        .col-4 {
+          grid-column: span 12;
+        }
+        .col-6 {
+          grid-column: span 12;
+        }
+      }
 
+      .feature {
+        padding: 18px;
+      }
+      .feature h3 {
+        margin: 10px 0 8px;
+        font-size: 18px;
+      }
+      .feature p {
+        margin: 0;
+        color: #b8c0e0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        background: linear-gradient(
+          135deg,
+          rgba(108, 92, 231, 0.25),
+          rgba(108, 92, 231, 0.05)
+        );
+        display: grid;
+        place-items: center;
+        border: 1px solid #2a3555;
+      }
+      .icon svg {
+        width: 22px;
+        height: 22px;
+        opacity: 0.9;
+      }
 
-    <p class="meta">
-      По вопросам пишите на <a href="mailto:team@crispies.io">team@crispies.io</a>
-    </p>
-  </main>
+      /* Steps */
+      .step {
+        display: flex;
+        gap: 18px;
+        align-items: flex-start;
+        padding: 18px;
+        border-left: 2px solid #2a3555;
+      }
+      .step-num {
+        width: 28px;
+        height: 28px;
+        border-radius: 8px;
+        flex: 0 0 28px;
+        background: linear-gradient(135deg, var(--primary), #8a7bff);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: 14px;
+      }
 
-  <footer>
-    © <span id="year"></span> Crispies
-  </footer>
+      /* FAQ */
+      details.card {
+        padding: 16px 18px;
+      }
+      details summary {
+        list-style: none;
+        cursor: pointer;
+        outline: none;
+        font-weight: 600;
+        color: #d7dcf5;
+      }
+      details summary::-webkit-details-marker {
+        display: none;
+      }
+      details p {
+        color: #b8c0e0;
+        margin: 10px 0 0;
+        font-size: 14px;
+        line-height: 1.6;
+      }
 
-  <script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-  </script>
-</body>
+      /* Footer */
+      footer {
+        padding: 32px 0 40px;
+        color: #7e89a8;
+        font-size: 13px;
+        text-align: center;
+      }
+      footer a {
+        color: #c4cbf5;
+        text-decoration: none;
+      }
+      footer a:hover {
+        text-decoration: underline;
+      }
+
+      /* Util */
+      .mt-8 {
+        margin-top: 8px;
+      }
+      .mt-16 {
+        margin-top: 16px;
+      }
+      .mt-24 {
+        margin-top: 24px;
+      }
+      .mb-8 {
+        margin-bottom: 8px;
+      }
+      .mb-16 {
+        margin-bottom: 16px;
+      }
+      .mb-24 {
+        margin-bottom: 24px;
+      }
+      .center {
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body class="grid-overlay">
+    <div class="glow" aria-hidden="true"></div>
+
+    <!-- Header -->
+    <header class="header" role="banner">
+      <div class="container nav">
+        <a class="logo" href="#top" aria-label="На главную">
+          <span class="logo-mark" aria-hidden="true"></span>
+          Crispies
+        </a>
+        <nav
+          aria-label="Главная навигация"
+          style="display: flex; gap: 18px; align-items: center"
+        >
+          <a href="#features">Возможности</a>
+          <a href="#how">Как это работает</a>
+          <a href="#faq">FAQ</a>
+          <a
+            class="btn secondary"
+            href="https://t.me/crispies_chat"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Чат в Telegram</a
+          >
+          <a class="btn" href="mailto:team@crispies.io">Связаться</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <main id="top" class="hero container" role="main" aria-labelledby="title">
+      <span class="badge" aria-label="Статус">
+        <span class="dot" aria-hidden="true"></span>
+        скоро запуск
+      </span>
+
+      <h1 id="title">
+        <span class="brand">Crispies</span> — аккуратные инструменты для
+        фаундеров и инвесторов
+      </h1>
+
+      <p class="lead">
+        Создавайте карточки стартапов, подключайте метрики (MRR/ARR,
+        TAM/SAM/SOM) и делитесь с инвесторами. Инвесторы — быстро находите
+        проекты по стадии, нише и traction.
+      </p>
+
+      <div class="cta">
+        <a class="btn" href="mailto:team@crispies.io">Запросить доступ</a>
+        <a
+          class="btn secondary"
+          href="https://t.me/crispies_chat"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Чат в Telegram</a
+        >
+      </div>
+    </main>
+
+    <!-- Features -->
+    <section
+      id="features"
+      class="section container"
+      aria-labelledby="features-title"
+    >
+      <h2 id="features-title" class="center">Что внутри</h2>
+      <p class="sub center">
+        Минимум шумов — максимум пользы. Прозрачные карточки, сильный поиск и
+        понятные цифры.
+      </p>
+
+      <div class="grid">
+        <article class="card feature col-4">
+          <div class="icon" aria-hidden="true">
+            <!-- card icon -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M5 7h14M5 12h14M5 17h8"
+                stroke="white"
+                stroke-opacity=".9"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <h3>Карточки стартапов</h3>
+          <p>
+            Единый профиль проекта: описание, стадия, теги, команда, презентации
+            и ссылки. Доступ по прямой ссылке.
+          </p>
+        </article>
+
+        <article class="card feature col-4">
+          <div class="icon" aria-hidden="true">
+            <!-- search icon -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <circle
+                cx="11"
+                cy="11"
+                r="6.25"
+                stroke="white"
+                stroke-opacity=".9"
+                stroke-width="1.5"
+              />
+              <path
+                d="M20 20l-3.5-3.5"
+                stroke="white"
+                stroke-opacity=".9"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <h3>Поиск и фильтры</h3>
+          <p>
+            Сфера, стадия, выручка, пользователи, CAC/LTV, ищут раунд —
+            подбирайте релевантные сделки быстро.
+          </p>
+        </article>
+
+        <article class="card feature col-4">
+          <div class="icon" aria-hidden="true">
+            <!-- chart icon -->
+            <svg viewBox="0 0 24 24" fill="none">
+              <path
+                d="M4 20V6m0 14h16M8 20V10m4 10v-7m4 7v-4"
+                stroke="white"
+                stroke-opacity=".9"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              />
+            </svg>
+          </div>
+          <h3>Метрики и дашборд</h3>
+          <p>
+            MRR/ARR, TAM/SAM/SOM и другие ключевые показатели — с правильным
+            форматированием и аккуратным UI.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- How it works -->
+    <section id="how" class="section container" aria-labelledby="how-title">
+      <h2 id="how-title" class="center">Как это работает</h2>
+      <p class="sub center">
+        Три шага, и вы готовы делиться проектом или собирать пайплайн сделок.
+      </p>
+
+      <div class="grid">
+        <div class="card col-6 step">
+          <div class="step-num">1</div>
+          <div>
+            <h3 class="mt-8 mb-8">Создайте профиль</h3>
+            <p>
+              Залогиньтесь, заполните карточку стартапа: название, сфера,
+              краткое описание, стадия, ссылки.
+            </p>
+          </div>
+        </div>
+
+        <div class="card col-6 step">
+          <div class="step-num">2</div>
+          <div>
+            <h3 class="mt-8 mb-8">Добавьте метрики</h3>
+            <p>
+              MRR, ARR, пользователи, CAC/LTV, TAM/SAM/SOM. Ничего лишнего —
+              только то, что важно инвесторам.
+            </p>
+          </div>
+        </div>
+
+        <div class="card col-12 step">
+          <div class="step-num">3</div>
+          <div>
+            <h3 class="mt-8 mb-8">Поделитесь и собирайте обратную связь</h3>
+            <p>
+              Шарьте ссылку или QR-код, управляйте доступом команды. Инвесторы
+              находят вас через умный поиск.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Mock "screens" block (SVG) -->
+    <section class="section container" aria-labelledby="screens-title">
+      <h2 id="screens-title" class="center">Как выглядит</h2>
+      <p class="sub center">
+        Превью интерфейса в фирменном стиле — аккуратно, понятно, без
+        визуального шума.
+      </p>
+
+      <div class="card" style="padding: 14px">
+        <svg
+          viewBox="0 0 1200 540"
+          role="img"
+          aria-label="Макет интерфейса"
+          style="width: 100%; height: auto; display: block"
+        >
+          <defs>
+            <linearGradient id="g1" x1="0" x2="1">
+              <stop offset="0" stop-color="rgba(108,92,231,.25)" />
+              <stop offset="1" stop-color="rgba(108,92,231,.05)" />
+            </linearGradient>
+          </defs>
+
+          <!-- рамка экрана -->
+          <rect
+            x="12"
+            y="12"
+            width="1176"
+            height="516"
+            rx="16"
+            fill="url(#g1)"
+            stroke="#2A3555"
+          />
+
+          <!-- верхняя панель -->
+          <rect
+            x="32"
+            y="36"
+            width="1136"
+            height="44"
+            rx="10"
+            fill="rgba(255,255,255,.06)"
+            stroke="#2A3555"
+          />
+          <!-- карточки -->
+          <rect
+            x="32"
+            y="98"
+            width="356"
+            height="160"
+            rx="14"
+            fill="rgba(255,255,255,.05)"
+            stroke="#2A3555"
+          />
+          <rect
+            x="408"
+            y="98"
+            width="356"
+            height="160"
+            rx="14"
+            fill="rgba(255,255,255,.05)"
+            stroke="#2A3555"
+          />
+          <rect
+            x="784"
+            y="98"
+            width="356"
+            height="160"
+            rx="14"
+            fill="rgba(255,255,255,.05)"
+            stroke="#2A3555"
+          />
+
+          <rect
+            x="32"
+            y="276"
+            width="548"
+            height="220"
+            rx="14"
+            fill="rgba(255,255,255,.05)"
+            stroke="#2A3555"
+          />
+          <!-- график -->
+          <polyline
+            points="60,460 120,420 180,430 240,380 300,392 360,350 420,360 480,320 540,340"
+            fill="none"
+            stroke="#8A7BFF"
+            stroke-width="3"
+          />
+
+          <rect
+            x="600"
+            y="276"
+            width="540"
+            height="220"
+            rx="14"
+            fill="rgba(255,255,255,.05)"
+            stroke="#2A3555"
+          />
+          <!-- столбики -->
+          <rect x="640" y="456" width="22" height="40" fill="#8A7BFF" />
+          <rect x="680" y="456" width="22" height="80" fill="#8A7BFF" />
+          <rect x="720" y="456" width="22" height="56" fill="#8A7BFF" />
+          <rect x="760" y="456" width="22" height="96" fill="#8A7BFF" />
+          <rect x="800" y="456" width="22" height="70" fill="#8A7BFF" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section container center" aria-labelledby="cta-title">
+      <h2 id="cta-title">Готовы первыми попробовать?</h2>
+      <p class="sub">
+        Напишите нам — подключим вас к раннему доступу и соберём обратную связь.
+      </p>
+      <div class="cta">
+        <a class="btn" href="mailto:team@crispies.io">team@crispies.io</a>
+        <a
+          class="btn secondary"
+          href="https://t.me/crispies_chat"
+          target="_blank"
+          rel="noopener noreferrer"
+          >Чат в Telegram</a
+        >
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section id="faq" class="section container" aria-labelledby="faq-title">
+      <h2 id="faq-title" class="center">FAQ</h2>
+
+      <div class="grid">
+        <details class="card col-6">
+          <summary>Когда релиз?</summary>
+          <p>
+            Мы заканчиваем MVP и пилоты с первыми фондами. Объявим дату в нашем
+            чате и email-рассылке.
+          </p>
+        </details>
+        <details class="card col-6">
+          <summary>Сколько это будет стоить?</summary>
+          <p>
+            Базовые функции для фаундеров будут бесплатны. Профессиональные
+            фильтры и отчёты — по подписке.
+          </p>
+        </details>
+        <details class="card col-6">
+          <summary>Нужна ли регистрация?</summary>
+          <p>
+            Для создания карточки — да (email-логин). Публичные карточки
+            доступны по ссылке для просмотра.
+          </p>
+        </details>
+        <details class="card col-6">
+          <summary>С кем связаться по партнёрствам?</summary>
+          <p>
+            Пишите на <a href="mailto:team@crispies.io">team@crispies.io</a> —
+            обсудим пилоты и интеграции.
+          </p>
+        </details>
+      </div>
+    </section>
+
+    <footer role="contentinfo">
+      <div class="container">
+        © <span id="year"></span> Crispies ·
+        <a href="mailto:team@crispies.io">team@crispies.io</a> ·
+        <a
+          href="https://t.me/crispies_chat"
+          target="_blank"
+          rel="noopener noreferrer"
+          >@crispies_chat</a
+        >
+      </div>
+    </footer>
+
+    <noscript>Для корректной работы этого сайта включите JavaScript.</noscript>
+    <script>
+      document.getElementById("year").textContent = new Date().getFullYear();
+    </script>
+  </body>
 </html>
