@@ -14,13 +14,12 @@
     <meta name="color-scheme" content="dark" />
     <meta name="theme-color" content="#0B0F19" />
     <link rel="canonical" href="https://crispies.io/" />
-    <!-- Жёстко апгрейдим любые случайные http→https и блокируем смешанный контент -->
     <meta
       http-equiv="Content-Security-Policy"
       content="upgrade-insecure-requests; block-all-mixed-content"
     />
 
-    <!-- Open Graph / Twitter -->
+    <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
@@ -31,14 +30,13 @@
       content="Карточки стартапов, метрики и умный поиск для инвесторов."
     />
     <meta property="og:url" content="https://crispies.io/" />
-    <!-- Добавь /og-image.png в корень при желании -->
     <meta property="og:image" content="/og-image.png" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Icons -->
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <!-- Icons (относительные пути, чтобы не ломалось при file://) -->
+    <link rel="icon" href="./favicon.ico" sizes="any" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
@@ -55,11 +53,12 @@
         --card: #0f1524;
         --muted: #a3aed0;
         --text: #e6e8f0;
-        --primary: #6c5ce7; /* фирменный фиолетовый */
-        --accent: #10b981; /* успех/подсветки */
+        --primary: #6c5ce7;
+        --accent: #10b981;
         --border: #202b44;
         --radius: 18px;
         --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        --header-h: 72px;
       }
 
       * {
@@ -91,13 +90,16 @@
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
+        padding-top: var(--header-h);
       }
 
-      /* Едва заметная «чертёжная» сетка поверх фона */
+      /* «чертёжная» сетка */
       .grid-overlay::before {
         content: "";
         position: fixed;
         inset: 0;
+        pointer-events: none;
+        z-index: 0;
         background-image: linear-gradient(
             to right,
             rgba(255, 255, 255, 0.04) 1px,
@@ -114,15 +116,13 @@
           rgba(0, 0, 0, 0.5),
           transparent 80%
         );
-        pointer-events: none;
-        z-index: 0;
       }
-
       .glow {
         position: fixed;
         inset: -20% -20% auto auto;
         width: 45vmax;
         height: 45vmax;
+        z-index: 0;
         background: radial-gradient(
           closest-side,
           rgba(108, 92, 231, 0.22),
@@ -133,8 +133,6 @@
         pointer-events: none;
         border-radius: 50%;
         animation: float 14s ease-in-out infinite;
-        transform: translateZ(0);
-        z-index: 0;
       }
       @keyframes float {
         0% {
@@ -151,7 +149,7 @@
       .container {
         max-width: 1120px;
         margin: 0 auto;
-        padding: clamp(20px, 3vw, 40px) 20px;
+        padding: clamp(16px, 3vw, 40px) 20px;
       }
       .card {
         background: linear-gradient(
@@ -165,25 +163,22 @@
         backdrop-filter: blur(12px);
       }
 
-      /* Header */
+      /* Header (fixed) + mobile menu */
       .header {
-        position: sticky;
-        top: 0;
-        z-index: 10;
-        background: linear-gradient(
-          180deg,
-          rgba(11, 15, 25, 0.75),
-          rgba(11, 15, 25, 0)
-        );
-        border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-        backdrop-filter: blur(10px);
+        position: fixed;
+        inset: 0 0 auto 0;
+        z-index: 9999;
+        isolation: isolate;
+        background: #0b0f19;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
       }
       .nav {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 16px;
-        padding: 14px 0;
+        padding: 12px 0;
       }
       .logo {
         display: flex;
@@ -198,7 +193,6 @@
         width: 28px;
         height: 28px;
         border-radius: 8px;
-        display: inline-block;
         background: linear-gradient(135deg, var(--primary), #8a7bff);
         box-shadow: 0 8px 24px rgba(108, 92, 231, 0.45);
       }
@@ -244,11 +238,53 @@
         border-color: #3a4670;
       }
 
+      /* mobile toggler */
+      .menu-toggle {
+        display: none;
+        background: transparent;
+        border: 1px solid #2a3555;
+        color: #c4cbf5;
+        border-radius: 10px;
+        padding: 8px 10px;
+      }
+      .nav-links {
+        display: flex;
+        gap: 18px;
+        align-items: center;
+      }
+      @media (max-width: 860px) {
+        .menu-toggle {
+          display: inline-flex;
+        }
+        .nav-links {
+          position: fixed;
+          top: var(--header-h);
+          left: 0;
+          right: 0;
+          display: none;
+          flex-direction: column;
+          align-items: stretch;
+          gap: 10px;
+          background: #0b0f19;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+          padding: 12px 20px 16px;
+          box-shadow: 0 16px 28px rgba(0, 0, 0, 0.45);
+        }
+        .nav-links.open {
+          display: flex;
+        }
+        .nav-links a,
+        .nav-links .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
+
       /* Hero */
       .hero {
         position: relative;
-        padding: min(12vh, 120px) 0 72px;
         text-align: center;
+        padding: min(12vh, 120px) 0 72px;
       }
       .badge {
         display: inline-flex;
@@ -260,7 +296,6 @@
         border-radius: 999px;
         font-size: 12px;
         color: var(--muted);
-        letter-spacing: 0.02em;
       }
       .dot {
         width: 8px;
@@ -277,7 +312,7 @@
       }
       h1 {
         margin: 14px 0 12px;
-        font-size: clamp(32px, 6vw, 56px);
+        font-size: clamp(28px, 6vw, 56px);
         line-height: 1.06;
         font-weight: 800;
         letter-spacing: -0.02em;
@@ -285,7 +320,7 @@
       .lead {
         margin: 10px auto 28px;
         color: var(--muted);
-        font-size: clamp(16px, 2.2vw, 18px);
+        font-size: clamp(15px, 2.2vw, 18px);
         line-height: 1.65;
         max-width: 760px;
       }
@@ -295,13 +330,19 @@
         justify-content: center;
         flex-wrap: wrap;
       }
+      @media (max-width: 480px) {
+        .btn {
+          width: 100%;
+          justify-content: center;
+        }
+      }
 
-      /* Features */
+      /* Sections & grid */
       .section {
         padding: 72px 0;
       }
       .section h2 {
-        font-size: clamp(22px, 4.2vw, 32px);
+        font-size: clamp(20px, 4.2vw, 32px);
         margin: 0 0 14px;
         letter-spacing: -0.01em;
       }
@@ -323,11 +364,8 @@
       .col-12 {
         grid-column: span 12;
       }
-
       @media (max-width: 900px) {
-        .col-4 {
-          grid-column: span 12;
-        }
+        .col-4,
         .col-6 {
           grid-column: span 12;
         }
@@ -365,6 +403,85 @@
         opacity: 0.9;
       }
 
+      /* Preview: база стартапов */
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+        padding: 14px;
+      }
+      .input {
+        flex: 1 1 260px;
+        min-width: 200px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid #2a3555;
+        color: var(--text);
+        border-radius: 12px;
+        padding: 10px 12px;
+        outline: none;
+      }
+      .chip {
+        padding: 6px 10px;
+        border: 1px solid #2a3555;
+        border-radius: 999px;
+        font-size: 12px;
+        color: #c4cbf5;
+        background: rgba(255, 255, 255, 0.03);
+      }
+
+      .table-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.7fr 0.7fr 0.7fr 0.7fr;
+        gap: 10px;
+        padding: 12px 14px;
+      }
+      .th {
+        color: #a8b1d9;
+        font-size: 12px;
+        letter-spacing: 0.02em;
+      }
+      .row {
+        display: contents;
+      }
+      .cell {
+        padding: 12px 10px;
+        border-top: 1px solid #2a3555;
+        color: #d7dcf5;
+        font-size: 14px;
+      }
+      .tag {
+        font-size: 12px;
+        color: #b8c0e0;
+        border: 1px solid #2a3555;
+        border-radius: 999px;
+        padding: 4px 8px;
+        margin-right: 6px;
+        display: inline-block;
+      }
+
+      /* Мобильное представление превью */
+      @media (max-width: 700px) {
+        .table-grid {
+          display: block;
+          padding: 8px;
+        }
+        .th {
+          display: none;
+        }
+        .row {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: 8px;
+          border-top: 1px solid #2a3555;
+          padding: 12px 8px;
+        }
+        .cell {
+          border: 0;
+          padding: 0;
+        }
+      }
+
       /* Steps */
       .step {
         display: flex;
@@ -386,24 +503,90 @@
       }
 
       /* FAQ */
-      details.card {
-        padding: 16px 18px;
+      .accordion {
+        display: grid;
+        gap: 12px;
       }
-      details summary {
-        list-style: none;
-        cursor: pointer;
-        outline: none;
-        font-weight: 600;
+      .acc-item {
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .acc-btn {
+        width: 100%;
+        text-align: left;
+        background: transparent;
         color: #d7dcf5;
+        font-weight: 600;
+        font-size: 15px;
+        padding: 14px 16px;
+        border: 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        cursor: pointer;
       }
-      details summary::-webkit-details-marker {
-        display: none;
+      .acc-icon {
+        transition: transform 0.2s ease;
       }
-      details p {
+      .acc-panel {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+        padding: 0 16px;
+      }
+      .acc-panel p {
         color: #b8c0e0;
-        margin: 10px 0 0;
         font-size: 14px;
         line-height: 1.6;
+      }
+      .acc-item.active .acc-panel {
+        padding: 0 16px 14px;
+      }
+      .acc-item.active .acc-icon {
+        transform: rotate(180deg);
+      }
+
+      /* Dialog (модалка) */
+      .dialog-backdrop {
+        position: fixed;
+        inset: 0;
+        display: none;
+        place-items: center;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(4px);
+        z-index: 2000;
+      }
+      .dialog-backdrop[aria-hidden="false"] {
+        display: grid;
+      }
+      .dialog {
+        width: min(560px, 92vw);
+        background: rgba(15, 21, 36, 0.96);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        box-shadow: var(--shadow);
+        padding: 18px;
+      }
+      .dialog h3 {
+        margin: 6px 0 8px;
+      }
+      .dialog p {
+        color: #b8c0e0;
+        margin: 0 0 12px;
+      }
+      .dialog .row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .dialog .btn {
+        box-shadow: none;
+      }
+      .dialog .close {
+        background: transparent;
+        border: 1px solid #2a3555;
+        color: #c4cbf5;
       }
 
       /* Footer */
@@ -421,7 +604,13 @@
         text-decoration: underline;
       }
 
-      /* Util */
+      /* Utils */
+      .center {
+        text-align: center;
+      }
+      .mb-0 {
+        margin-bottom: 0;
+      }
       .mt-8 {
         margin-top: 8px;
       }
@@ -431,17 +620,8 @@
       .mt-24 {
         margin-top: 24px;
       }
-      .mb-8 {
-        margin-bottom: 8px;
-      }
-      .mb-16 {
-        margin-bottom: 16px;
-      }
-      .mb-24 {
-        margin-bottom: 24px;
-      }
-      .center {
-        text-align: center;
+      :is(section, main)[id] {
+        scroll-margin-top: calc(var(--header-h) + 12px);
       }
     </style>
   </head>
@@ -452,55 +632,46 @@
     <header class="header" role="banner">
       <div class="container nav">
         <a class="logo" href="#top" aria-label="На главную">
-          <span class="logo-mark" aria-hidden="true"></span>
-          Crispies
+          <span class="logo-mark" aria-hidden="true"></span> Crispies
         </a>
-        <nav
-          aria-label="Главная навигация"
-          style="display: flex; gap: 18px; align-items: center"
+
+        <button
+          class="menu-toggle"
+          id="menuToggle"
+          aria-controls="mainNav"
+          aria-expanded="false"
         >
+          Меню
+        </button>
+
+        <nav id="mainNav" class="nav-links" aria-label="Главная навигация">
           <a href="#features">Возможности</a>
           <a href="#how">Как это работает</a>
+          <a href="#preview">Превью</a>
           <a href="#faq">FAQ</a>
-          <a
-            class="btn secondary"
-            href="https://t.me/crispies_chat"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Чат в Telegram</a
-          >
-          <a class="btn" href="mailto:team@crispies.io">Связаться</a>
+          <button class="btn secondary" data-open-dialog>Связаться</button>
+          <button class="btn" data-open-dialog>Запросить доступ</button>
         </nav>
       </div>
     </header>
 
     <!-- Hero -->
     <main id="top" class="hero container" role="main" aria-labelledby="title">
-      <span class="badge" aria-label="Статус">
-        <span class="dot" aria-hidden="true"></span>
-        скоро запуск
-      </span>
-
+      <span class="badge" aria-label="Статус"
+        ><span class="dot" aria-hidden="true"></span> скоро запуск</span
+      >
       <h1 id="title">
         <span class="brand">Crispies</span> — аккуратные инструменты для
         фаундеров и инвесторов
       </h1>
-
       <p class="lead">
         Создавайте карточки стартапов, подключайте метрики (MRR/ARR,
         TAM/SAM/SOM) и делитесь с инвесторами. Инвесторы — быстро находите
         проекты по стадии, нише и traction.
       </p>
-
       <div class="cta">
-        <a class="btn" href="mailto:team@crispies.io">Запросить доступ</a>
-        <a
-          class="btn secondary"
-          href="https://t.me/crispies_chat"
-          target="_blank"
-          rel="noopener noreferrer"
-          >Чат в Telegram</a
-        >
+        <button class="btn" data-open-dialog>Запросить доступ</button>
+        <button class="btn secondary" data-open-dialog>Связаться</button>
       </div>
     </main>
 
@@ -519,7 +690,6 @@
       <div class="grid">
         <article class="card feature col-4">
           <div class="icon" aria-hidden="true">
-            <!-- card icon -->
             <svg viewBox="0 0 24 24" fill="none">
               <path
                 d="M5 7h14M5 12h14M5 17h8"
@@ -536,10 +706,8 @@
             и ссылки. Доступ по прямой ссылке.
           </p>
         </article>
-
         <article class="card feature col-4">
           <div class="icon" aria-hidden="true">
-            <!-- search icon -->
             <svg viewBox="0 0 24 24" fill="none">
               <circle
                 cx="11"
@@ -564,10 +732,8 @@
             подбирайте релевантные сделки быстро.
           </p>
         </article>
-
         <article class="card feature col-4">
           <div class="icon" aria-hidden="true">
-            <!-- chart icon -->
             <svg viewBox="0 0 24 24" fill="none">
               <path
                 d="M4 20V6m0 14h16M8 20V10m4 10v-7m4 7v-4"
@@ -598,30 +764,28 @@
         <div class="card col-6 step">
           <div class="step-num">1</div>
           <div>
-            <h3 class="mt-8 mb-8">Создайте профиль</h3>
-            <p>
+            <h3 class="mt-8 mb-0">Создайте профиль</h3>
+            <p class="mt-8">
               Залогиньтесь, заполните карточку стартапа: название, сфера,
               краткое описание, стадия, ссылки.
             </p>
           </div>
         </div>
-
         <div class="card col-6 step">
           <div class="step-num">2</div>
           <div>
-            <h3 class="mt-8 mb-8">Добавьте метрики</h3>
-            <p>
+            <h3 class="mt-8 mb-0">Добавьте метрики</h3>
+            <p class="mt-8">
               MRR, ARR, пользователи, CAC/LTV, TAM/SAM/SOM. Ничего лишнего —
               только то, что важно инвесторам.
             </p>
           </div>
         </div>
-
         <div class="card col-12 step">
           <div class="step-num">3</div>
           <div>
-            <h3 class="mt-8 mb-8">Поделитесь и собирайте обратную связь</h3>
-            <p>
+            <h3 class="mt-8 mb-0">Поделитесь и собирайте обратную связь</h3>
+            <p class="mt-8">
               Шарьте ссылку или QR-код, управляйте доступом команды. Инвесторы
               находят вас через умный поиск.
             </p>
@@ -630,111 +794,95 @@
       </div>
     </section>
 
-    <!-- Mock "screens" block (SVG) -->
-    <section class="section container" aria-labelledby="screens-title">
-      <h2 id="screens-title" class="center">Как выглядит</h2>
+    <!-- Preview -->
+    <section
+      id="preview"
+      class="section container"
+      aria-labelledby="screens-title"
+    >
+      <h2 id="screens-title" class="center">Превью: база стартапов</h2>
       <p class="sub center">
-        Превью интерфейса в фирменном стиле — аккуратно, понятно, без
-        визуального шума.
+        Демонстрация UI: строка фильтров и карточки проектов (статический
+        макет).
       </p>
 
-      <div class="card" style="padding: 14px">
-        <svg
-          viewBox="0 0 1200 540"
-          role="img"
-          aria-label="Макет интерфейса"
-          style="width: 100%; height: auto; display: block"
-        >
-          <defs>
-            <linearGradient id="g1" x1="0" x2="1">
-              <stop offset="0" stop-color="rgba(108,92,231,.25)" />
-              <stop offset="1" stop-color="rgba(108,92,231,.05)" />
-            </linearGradient>
-          </defs>
+      <div class="card">
+        <div class="toolbar">
+          <input
+            class="input"
+            type="search"
+            placeholder="Поиск по названию, тегам, описанию"
+            aria-label="Поиск"
+            disabled
+          />
+          <span class="chip">Fintech</span><span class="chip">Seed</span
+          ><span class="chip">MRR &gt; $10k</span>
+          <button class="btn secondary" disabled>Фильтры</button>
+        </div>
 
-          <!-- рамка экрана -->
-          <rect
-            x="12"
-            y="12"
-            width="1176"
-            height="516"
-            rx="16"
-            fill="url(#g1)"
-            stroke="#2A3555"
-          />
+        <div class="table-grid" role="table" aria-label="Список стартапов">
+          <div class="th">Проект</div>
+          <div class="th">Стадия</div>
+          <div class="th">MRR</div>
+          <div class="th">Пользователи</div>
+          <div class="th">Теги</div>
 
-          <!-- верхняя панель -->
-          <rect
-            x="32"
-            y="36"
-            width="1136"
-            height="44"
-            rx="10"
-            fill="rgba(255,255,255,.06)"
-            stroke="#2A3555"
-          />
-          <!-- карточки -->
-          <rect
-            x="32"
-            y="98"
-            width="356"
-            height="160"
-            rx="14"
-            fill="rgba(255,255,255,.05)"
-            stroke="#2A3555"
-          />
-          <rect
-            x="408"
-            y="98"
-            width="356"
-            height="160"
-            rx="14"
-            fill="rgba(255,255,255,.05)"
-            stroke="#2A3555"
-          />
-          <rect
-            x="784"
-            y="98"
-            width="356"
-            height="160"
-            rx="14"
-            fill="rgba(255,255,255,.05)"
-            stroke="#2A3555"
-          />
+          <div class="row" role="row">
+            <div class="cell" role="cell">
+              <strong>Ledgerly</strong><br /><small style="color: #93a0c7"
+                >Авто-бухучёт для SMB</small
+              >
+            </div>
+            <div class="cell">Seed</div>
+            <div class="cell">$18k</div>
+            <div class="cell">12 400</div>
+            <div class="cell">
+              <span class="tag">Fintech</span><span class="tag">B2B</span>
+            </div>
+          </div>
 
-          <rect
-            x="32"
-            y="276"
-            width="548"
-            height="220"
-            rx="14"
-            fill="rgba(255,255,255,.05)"
-            stroke="#2A3555"
-          />
-          <!-- график -->
-          <polyline
-            points="60,460 120,420 180,430 240,380 300,392 360,350 420,360 480,320 540,340"
-            fill="none"
-            stroke="#8A7BFF"
-            stroke-width="3"
-          />
+          <div class="row" role="row">
+            <div class="cell">
+              <strong>NovaOps</strong><br /><small style="color: #93a0c7"
+                >ML-планировщик закупок</small
+              >
+            </div>
+            <div class="cell">Pre-A</div>
+            <div class="cell">$42k</div>
+            <div class="cell">7 800</div>
+            <div class="cell">
+              <span class="tag">AI</span><span class="tag">Ops</span>
+            </div>
+          </div>
 
-          <rect
-            x="600"
-            y="276"
-            width="540"
-            height="220"
-            rx="14"
-            fill="rgba(255,255,255,.05)"
-            stroke="#2A3555"
-          />
-          <!-- столбики -->
-          <rect x="640" y="456" width="22" height="40" fill="#8A7BFF" />
-          <rect x="680" y="456" width="22" height="80" fill="#8A7BFF" />
-          <rect x="720" y="456" width="22" height="56" fill="#8A7BFF" />
-          <rect x="760" y="456" width="22" height="96" fill="#8A7BFF" />
-          <rect x="800" y="456" width="22" height="70" fill="#8A7BFF" />
-        </svg>
+          <div class="row" role="row">
+            <div class="cell">
+              <strong>FlowMail</strong><br /><small style="color: #93a0c7"
+                >Транзакционные письма</small
+              >
+            </div>
+            <div class="cell">Seed</div>
+            <div class="cell">$11k</div>
+            <div class="cell">25 100</div>
+            <div class="cell">
+              <span class="tag">SaaS</span><span class="tag">DevTools</span>
+            </div>
+          </div>
+
+          <div class="row" role="row">
+            <div class="cell">
+              <strong>HireBoard</strong><br /><small style="color: #93a0c7"
+                >Сорсинг кандидатов</small
+              >
+            </div>
+            <div class="cell">MVP</div>
+            <div class="cell">$2.4k</div>
+            <div class="cell">2 900</div>
+            <div class="cell">
+              <span class="tag">HR</span><span class="tag">B2B</span>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -745,7 +893,7 @@
         Напишите нам — подключим вас к раннему доступу и соберём обратную связь.
       </p>
       <div class="cta">
-        <a class="btn" href="mailto:team@crispies.io">team@crispies.io</a>
+        <button class="btn" data-open-dialog>team@crispies.io</button>
         <a
           class="btn secondary"
           href="https://t.me/crispies_chat"
@@ -759,36 +907,86 @@
     <!-- FAQ -->
     <section id="faq" class="section container" aria-labelledby="faq-title">
       <h2 id="faq-title" class="center">FAQ</h2>
-
-      <div class="grid">
-        <details class="card col-6">
-          <summary>Когда релиз?</summary>
-          <p>
-            Мы заканчиваем MVP и пилоты с первыми фондами. Объявим дату в нашем
-            чате и email-рассылке.
-          </p>
-        </details>
-        <details class="card col-6">
-          <summary>Сколько это будет стоить?</summary>
-          <p>
-            Базовые функции для фаундеров будут бесплатны. Профессиональные
-            фильтры и отчёты — по подписке.
-          </p>
-        </details>
-        <details class="card col-6">
-          <summary>Нужна ли регистрация?</summary>
-          <p>
-            Для создания карточки — да (email-логин). Публичные карточки
-            доступны по ссылке для просмотра.
-          </p>
-        </details>
-        <details class="card col-6">
-          <summary>С кем связаться по партнёрствам?</summary>
-          <p>
-            Пишите на <a href="mailto:team@crispies.io">team@crispies.io</a> —
-            обсудим пилоты и интеграции.
-          </p>
-        </details>
+      <div class="accordion" role="tablist">
+        <div class="acc-item">
+          <button class="acc-btn" role="tab" aria-expanded="false">
+            <span>Когда релиз?</span>
+            <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <div class="acc-panel" role="region">
+            <p>
+              Мы заканчиваем MVP и пилоты с первыми фондами. Объявим дату в чате
+              и рассылке.
+            </p>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" role="tab" aria-expanded="false">
+            <span>Сколько это будет стоить?</span>
+            <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <div class="acc-panel" role="region">
+            <p>
+              Базовые функции — бесплатно. Проф. фильтры и отчёты — по подписке.
+            </p>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" role="tab" aria-expanded="false">
+            <span>Нужна ли регистрация?</span>
+            <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <div class="acc-panel" role="region">
+            <p>
+              Для создания карточки — да. Публичные карточки доступны по ссылке
+              для просмотра.
+            </p>
+          </div>
+        </div>
+        <div class="acc-item">
+          <button class="acc-btn" role="tab" aria-expanded="false">
+            <span>С кем связаться по партнёрствам?</span>
+            <svg class="acc-icon" viewBox="0 0 24 24" width="20" height="20">
+              <path
+                d="M6 9l6 6 6-6"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+              />
+            </svg>
+          </button>
+          <div class="acc-panel" role="region">
+            <p>
+              Пишите на <a href="mailto:team@crispies.io">team@crispies.io</a> —
+              обсудим пилоты и интеграции.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -805,9 +1003,117 @@
       </div>
     </footer>
 
+    <!-- Dialog -->
+    <div
+      class="dialog-backdrop"
+      id="contactDialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="dialogTitle"
+      aria-hidden="true"
+    >
+      <div class="dialog" role="document">
+        <h3 id="dialogTitle" class="mb-0">Связаться с нами</h3>
+        <p class="mt-8">Напишите нам — отвечаем быстро.</p>
+        <div class="row mt-16">
+          <a class="btn" href="mailto:team@crispies.io">team@crispies.io</a>
+          <a
+            class="btn secondary"
+            href="https://t.me/crispies_chat"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Чат в Telegram</a
+          >
+          <button class="btn close" data-close-dialog>Закрыть</button>
+        </div>
+      </div>
+    </div>
+
     <noscript>Для корректной работы этого сайта включите JavaScript.</noscript>
     <script>
+      // Год в футере
       document.getElementById("year").textContent = new Date().getFullYear();
+
+      // Вар высоты хэдера для отступа страницы
+      const headerEl = document.querySelector(".header");
+      function setHeaderHeightVar() {
+        document.documentElement.style.setProperty(
+          "--header-h",
+          (headerEl.offsetHeight || 72) + "px"
+        );
+      }
+      setHeaderHeightVar();
+      addEventListener("resize", setHeaderHeightVar);
+
+      // Мобильное меню
+      const toggle = document.getElementById("menuToggle");
+      const links = document.getElementById("mainNav");
+      toggle.addEventListener("click", () => {
+        const open = links.classList.toggle("open");
+        toggle.setAttribute("aria-expanded", open ? "true" : "false");
+        document.body.style.overflow = open ? "hidden" : "";
+      });
+      // закрывать меню при клике на ссылку
+      links.querySelectorAll("a,button").forEach((el) =>
+        el.addEventListener("click", () => {
+          if (links.classList.contains("open")) {
+            links.classList.remove("open");
+            toggle.setAttribute("aria-expanded", "false");
+            document.body.style.overflow = "";
+          }
+        })
+      );
+
+      // FAQ (аккордеон)
+      const accItems = [...document.querySelectorAll(".acc-item")];
+      accItems.forEach((item) => {
+        const btn = item.querySelector(".acc-btn");
+        const panel = item.querySelector(".acc-panel");
+        btn.addEventListener("click", () => {
+          const isActive = item.classList.contains("active");
+          accItems.forEach((i) => {
+            i.classList.remove("active");
+            i.querySelector(".acc-btn").setAttribute("aria-expanded", "false");
+            i.querySelector(".acc-panel").style.maxHeight = 0;
+          });
+          if (!isActive) {
+            item.classList.add("active");
+            btn.setAttribute("aria-expanded", "true");
+            panel.style.maxHeight = panel.scrollHeight + "px";
+          }
+        });
+      });
+      addEventListener("resize", () => {
+        const open = document.querySelector(".acc-item.active .acc-panel");
+        if (open) open.style.maxHeight = open.scrollHeight + "px";
+      });
+
+      // Диалог
+      const dlg = document.getElementById("contactDialog");
+      const openers = document.querySelectorAll("[data-open-dialog]");
+      const closer = dlg.querySelector("[data-close-dialog]");
+      let lastFocus = null;
+      function openDialog() {
+        lastFocus = document.activeElement;
+        dlg.setAttribute("aria-hidden", "false");
+        (dlg.querySelector(".btn, a, button") || dlg).focus();
+        addEventListener("keydown", onEsc);
+        dlg.addEventListener("click", onBackdrop);
+      }
+      function closeDialog() {
+        dlg.setAttribute("aria-hidden", "true");
+        removeEventListener("keydown", onEsc);
+        dlg.removeEventListener("click", onBackdrop);
+        if (lastFocus) lastFocus.focus();
+      }
+      function onEsc(e) {
+        if (e.key === "Escape") closeDialog();
+      }
+      function onBackdrop(e) {
+        if (e.target === dlg) closeDialog();
+      }
+      openers.forEach((b) => b.addEventListener("click", openDialog));
+      closer.addEventListener("click", closeDialog);
     </script>
   </body>
 </html>
